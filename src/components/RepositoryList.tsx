@@ -10,6 +10,15 @@ import {
   RepositoryCardStats,
 } from "./RepositoryCard";
 import { RepositoryCardSkeleton } from "./ui/skeleton";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "./ui/pagination";
 import { useMemo } from "react";
 import type { SortType } from "../types/github";
 
@@ -21,6 +30,9 @@ export const RepositoryList = () => {
     sortType,
     searchQuery,
     languageFilter,
+    currentPage,
+    itemsPerPage,
+    setCurrentPage,
   } = useAppStore();
 
   const apiSortType = useMemo(() => {
@@ -33,13 +45,13 @@ export const RepositoryList = () => {
     data: repositories,
     isLoading: isLoadingRepos,
     error: reposError,
-  } = useUserRepositories(currentUser, filterType, apiSortType);
+  } = useUserRepositories(currentUser, filterType, apiSortType, 1, 100);
 
   const {
     data: starredRepos,
     isLoading: isLoadingStarred,
     error: starredError,
-  } = useStarredRepositories(currentUser);
+  } = useStarredRepositories(currentUser, 1, 100);
 
   const isLoading =
     activeTab === "repositories" ? isLoadingRepos : isLoadingStarred;
@@ -92,6 +104,43 @@ export const RepositoryList = () => {
     languageFilter,
     sortType,
   ]);
+
+  const totalItems = filteredRepositories.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  const paginatedRepositories = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredRepositories.slice(startIndex, endIndex);
+  }, [filteredRepositories, currentPage, itemsPerPage]);
+
+  const pageNumbers = useMemo(() => {
+    const pages: (number | string)[] = [];
+    const maxVisible = 5;
+
+    if (totalPages <= maxVisible) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) pages.push(i);
+        pages.push("ellipsis");
+        pages.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1);
+        pages.push("ellipsis");
+        for (let i = totalPages - 3; i <= totalPages; i++) pages.push(i);
+      } else {
+        pages.push(1);
+        pages.push("ellipsis");
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) pages.push(i);
+        pages.push("ellipsis");
+        pages.push(totalPages);
+      }
+    }
+    return pages;
+  }, [currentPage, totalPages]);
 
   if (isLoading) {
     return (
@@ -156,18 +205,21 @@ export const RepositoryList = () => {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="flex items-center justify-between px-1">
         <p className="text-muted-foreground text-sm">
-          <span className="font-semibold text-foreground">
-            {filteredRepositories.length}
-          </span>{" "}
-          {filteredRepositories.length === 1 ? "repository" : "repositories"}
+          <span className="font-semibold text-foreground">{totalItems}</span>{" "}
+          {totalItems === 1 ? "repository" : "repositories"}
           {searchQuery && ` matching "${searchQuery}"`}
         </p>
+        {totalPages > 1 && (
+          <p className="text-muted-foreground text-sm">
+            Page {currentPage} of {totalPages}
+          </p>
+        )}
       </div>
       <div>
-        {filteredRepositories.map((repo) => (
+        {paginatedRepositories.map((repo) => (
           <RepositoryCard key={repo.id}>
             <RepositoryCardHeader owner={repo.owner.login} name={repo.name} />
             <RepositoryCardDescription description={repo.description} />
@@ -180,6 +232,55 @@ export const RepositoryList = () => {
           </RepositoryCard>
         ))}
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex justify-center mt-8 pb-4">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() =>
+                    currentPage > 1 && setCurrentPage(currentPage - 1)
+                  }
+                  className={
+                    currentPage === 1 ? "pointer-events-none opacity-50" : ""
+                  }
+                />
+              </PaginationItem>
+
+              {pageNumbers.map((page, index) =>
+                page === "ellipsis" ? (
+                  <PaginationItem key={`ellipsis-${index}`}>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                ) : (
+                  <PaginationItem key={page}>
+                    <PaginationLink
+                      onClick={() => setCurrentPage(page as number)}
+                      isActive={currentPage === page}
+                    >
+                      {page}
+                    </PaginationLink>
+                  </PaginationItem>
+                ),
+              )}
+
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() =>
+                    currentPage < totalPages && setCurrentPage(currentPage + 1)
+                  }
+                  className={
+                    currentPage === totalPages
+                      ? "pointer-events-none opacity-50"
+                      : ""
+                  }
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      )}
     </div>
   );
 };

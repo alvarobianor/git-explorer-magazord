@@ -22,12 +22,16 @@ export const useUserRepositories = (
   username: string,
   type: FilterType = "all",
   sort: SortType = "updated",
+  page: number = 1,
+  perPage: number = 30,
 ) => {
   return useQuery({
-    queryKey: ["repositories", username, type, sort],
-    queryFn: () => githubService.getUserRepositories(username, type, sort),
+    queryKey: ["repositories", username, type, sort, page, perPage],
+    queryFn: () =>
+      githubService.getUserRepositories(username, type, sort, page, perPage),
     enabled: !!username,
-    staleTime: 3 * 60 * 1000, // 3 minutes
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
     retry: 2,
   });
 };
@@ -35,12 +39,17 @@ export const useUserRepositories = (
 /**
  * Hook to fetch user starred repositories
  */
-export const useStarredRepositories = (username: string) => {
+export const useStarredRepositories = (
+  username: string,
+  page: number = 1,
+  perPage: number = 30,
+) => {
   return useQuery({
-    queryKey: ["starred", username],
-    queryFn: () => githubService.getUserStarredRepos(username),
+    queryKey: ["starred", username, page, perPage],
+    queryFn: () => githubService.getUserStarredRepos(username, page, perPage),
     enabled: !!username,
-    staleTime: 3 * 60 * 1000, // 3 minutes
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
     retry: 2,
   });
 };
