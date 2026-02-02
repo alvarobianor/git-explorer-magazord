@@ -1,0 +1,9 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Layout Components > renders Layout root correctly 1`] = `
+<div
+  class="min-h-screen bg-background"
+>
+  Content
+</div>
+`;
