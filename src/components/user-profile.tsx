@@ -1,13 +1,14 @@
-import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { MapPin, Building2, Link as LinkIcon, Instagram } from "lucide-react";
+import { Skeleton } from "./ui/skeleton";
+import { useState, useEffect, forwardRef } from "react";
 
 interface UserProfileProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
 }
 
-const UserProfileRoot = React.forwardRef<HTMLDivElement, UserProfileProps>(
+const UserProfileRoot = forwardRef<HTMLDivElement, UserProfileProps>(
   ({ className, children, ...props }, ref) => (
     <div
       ref={ref}
@@ -35,18 +36,42 @@ const UserProfileAvatar: React.FC<AvatarProps> = ({
   alt,
   fallback,
   className,
-}) => (
-  <div className={cn("relative w-40 h-40 mx-auto", className)}>
-    <div className="w-full h-full rounded-full overflow-hidden border-8 border-white shadow-2xl">
-      <Avatar className="w-full h-full">
-        <AvatarImage src={src} alt={alt} className="object-cover" />
-        <AvatarFallback className="text-4xl bg-red-500 text-white font-bold">
-          {fallback}
-        </AvatarFallback>
-      </Avatar>
+}) => {
+  const [imageStatus, setImageStatus] = useState<
+    "loading" | "loaded" | "error"
+  >("loading");
+
+  useEffect(() => {
+    setImageStatus("loading");
+  }, [src]);
+
+  return (
+    <div className={cn("relative w-40 h-40 mx-auto", className)}>
+      <div className="w-full h-full rounded-full overflow-hidden border-8 border-white shadow-2xl relative bg-white">
+        {imageStatus === "loading" && (
+          <Skeleton className="w-full h-full absolute inset-0 z-10" />
+        )}
+        <Avatar className="w-full h-full">
+          <AvatarImage
+            src={src}
+            alt={alt}
+            className={cn(
+              "object-cover",
+              imageStatus === "loading" ? "invisible" : "visible",
+            )}
+            onLoad={() => setImageStatus("loaded")}
+            onError={() => setImageStatus("error")}
+          />
+          {imageStatus === "error" && (
+            <AvatarFallback className="text-4xl bg-red-500 text-white font-bold w-full h-full flex items-center justify-center">
+              {fallback}
+            </AvatarFallback>
+          )}
+        </Avatar>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 interface HeaderProps {
   name: string;
