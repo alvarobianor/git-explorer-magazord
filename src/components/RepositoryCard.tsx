@@ -2,22 +2,26 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Star, GitFork } from "lucide-react";
 
-interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+interface CardProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   children: React.ReactNode;
+  repoUrl?: string;
 }
 
-const RepositoryCardRoot = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ className, children, ...props }, ref) => (
-    <div
+const RepositoryCardRoot = React.forwardRef<HTMLAnchorElement, CardProps>(
+  ({ className, children, repoUrl, ...props }, ref) => (
+    <a
       ref={ref}
+      href={repoUrl}
+      target="_blank"
+      rel="noopener noreferrer"
       className={cn(
-        "bg-white border-b border-[#F4F4F4] py-6 px-6 first:pt-6 last:border-b-0 last:pb-6 hover:bg-gray-50/50 transition-all duration-200",
+        "block no-underline bg-white border-b border-[#F4F4F4] py-6 px-6 first:pt-6 last:border-b-0 last:pb-6 hover:bg-gray-50/80 hover:-translate-x-[10px] transition-all duration-200",
         className,
       )}
       {...props}
     >
       {children}
-    </div>
+    </a>
   ),
 );
 RepositoryCardRoot.displayName = "RepositoryCard";

@@ -45,13 +45,13 @@ export const RepositoryList = () => {
     data: repositories,
     isLoading: isLoadingRepos,
     error: reposError,
-  } = useUserRepositories(currentUser, filterType, apiSortType, 1, 100);
+  } = useUserRepositories(currentUser, filterType, apiSortType, 1, 30);
 
   const {
     data: starredRepos,
     isLoading: isLoadingStarred,
     error: starredError,
-  } = useStarredRepositories(currentUser, 1, 100);
+  } = useStarredRepositories(currentUser, 1, 30);
 
   const isLoading =
     activeTab === "repositories" ? isLoadingRepos : isLoadingStarred;
@@ -220,7 +220,7 @@ export const RepositoryList = () => {
       </div>
       <div>
         {paginatedRepositories.map((repo) => (
-          <RepositoryCard key={repo.id}>
+          <RepositoryCard key={repo.id} repoUrl={repo.html_url}>
             <RepositoryCardHeader owner={repo.owner.login} name={repo.name} />
             <RepositoryCardDescription description={repo.description} />
             <RepositoryCardStats
