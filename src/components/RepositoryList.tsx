@@ -203,7 +203,7 @@ export const RepositoryList = () => {
         <p className="text-muted-foreground">
           {searchQuery
             ? `No repositories match "${searchQuery}"`
-            : `This user doesn't have any ${activeTab === "starred" ? "starred " : ""}repositories yet.`}
+            : `This user doesn't have any ${activeTab === "starred" && "starred "}repositories yet. ${activeTab === "starred" && "Or starred repositories are private."}`}
         </p>
       </div>
     );
