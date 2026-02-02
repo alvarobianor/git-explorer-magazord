@@ -108,7 +108,7 @@ export const parseRepoFullName = (
 /**
  * Debounce function for search inputs
  */
-export const debounce = <T extends (...args: unknown[]) => unknown>(
+export const debounce = <T extends (...args: any[]) => any>(
   func: T,
   wait: number,
 ): ((...args: Parameters<T>) => void) => {

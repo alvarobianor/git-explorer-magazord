@@ -7,7 +7,6 @@ import {
   UserProfileInfo,
   UserProfileInfoItem,
 } from "./user-profile";
-import React from "react";
 
 describe("UserProfile", () => {
   it("renders root container correctly", () => {

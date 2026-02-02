@@ -6,6 +6,7 @@ import {
   useUser,
   useUserRepositories,
   useStarredRepositories,
+  useSearchRepositories,
 } from "../hooks/useGithubData";
 
 // Mock the store
@@ -18,6 +19,7 @@ vi.mock("../hooks/useGithubData", () => ({
   useUser: vi.fn(),
   useUserRepositories: vi.fn(),
   useStarredRepositories: vi.fn(),
+  useSearchRepositories: vi.fn(),
 }));
 
 describe("RepositoryList", () => {
@@ -31,6 +33,7 @@ describe("RepositoryList", () => {
       forks_count: 40000,
       language: "JavaScript",
       html_url: "https://github.com/facebook/react",
+      topics: [],
     },
   ];
 
@@ -65,6 +68,10 @@ describe("RepositoryList", () => {
     });
     (useStarredRepositories as any).mockReturnValue({
       data: [],
+      isLoading: false,
+    });
+    (useSearchRepositories as any).mockReturnValue({
+      data: null,
       isLoading: false,
     });
   });
@@ -117,15 +124,23 @@ describe("RepositoryList", () => {
     expect(screen.getByText(/25/)).toBeInTheDocument();
   });
 
-  it("shows search match message when searchQuery is active", () => {
+  it("uses search API and shows match message when searchQuery is active", () => {
+    const mockSearchData = { total_count: 5, items: mockRepos };
     (useAppStore as any).mockReturnValue({
       ...defaultStore,
       searchQuery: "react",
+    });
+    (useSearchRepositories as any).mockReturnValue({
+      data: mockSearchData,
+      isLoading: false,
     });
 
     render(<RepositoryList />);
 
     expect(screen.getByText(/matching "react"/)).toBeInTheDocument();
+    expect(screen.getByText(/5 of 5/)).toBeInTheDocument();
+    expect(screen.getByText("react")).toBeInTheDocument();
+    expect(useSearchRepositories).toHaveBeenCalled();
   });
 
   it("renders starred repositories when activeTab is starred", () => {

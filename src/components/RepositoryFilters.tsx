@@ -2,6 +2,8 @@ import { Input } from "./ui/input";
 import { Select } from "./ui/select";
 import { Search } from "lucide-react";
 import type { FilterType } from "../types/github";
+import { useState, useEffect, useMemo } from "react";
+import { debounce } from "../utils/helpers";
 
 interface RepositoryFiltersProps {
   searchQuery: string;
@@ -20,6 +22,22 @@ export const RepositoryFilters = ({
   languageFilter,
   setLanguageFilter,
 }: RepositoryFiltersProps) => {
+  const [localSearch, setLocalSearch] = useState(searchQuery);
+
+  const debouncedSetSearch = useMemo(
+    () => debounce((value: string) => setSearchQuery(value), 2000),
+    [setSearchQuery],
+  );
+
+  useEffect(() => {
+    setLocalSearch(searchQuery);
+  }, [searchQuery]);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setLocalSearch(value);
+    debouncedSetSearch(value);
+  };
   const typeFilters: { value: FilterType; label: string }[] = [
     { value: "all", label: "All" },
     { value: "public", label: "Public" },
@@ -45,8 +63,8 @@ export const RepositoryFilters = ({
         <Input
           placeholder="Search Here"
           className="pl-10 h-10 border-[#d0d7de] rounded-md focus-visible:ring-offset-0 focus-visible:ring-1 focus-visible:ring-[#0969da]"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          value={localSearch}
+          onChange={handleSearchChange}
         />
       </div>
 

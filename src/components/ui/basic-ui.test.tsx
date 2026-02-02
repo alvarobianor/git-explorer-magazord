@@ -6,7 +6,6 @@ import { Input } from "./input";
 import { Avatar, AvatarImage, AvatarFallback } from "./avatar";
 import { Select } from "./select";
 import { cn } from "@/lib/utils";
-import React from "react";
 
 describe("UI Components", () => {
   describe("Button", () => {

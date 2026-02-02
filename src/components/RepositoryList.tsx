@@ -3,6 +3,7 @@ import {
   useUser,
   useUserRepositories,
   useStarredRepositories,
+  useSearchRepositories,
 } from "../hooks/useGithubData";
 import {
   RepositoryCard,
@@ -21,7 +22,7 @@ import {
   PaginationPrevious,
 } from "./ui/pagination";
 import { useMemo } from "react";
-import type { SortType } from "../types/github";
+import type { GitHubRepository, SortType } from "../types/github";
 
 export const RepositoryList = () => {
   const {
@@ -36,6 +37,8 @@ export const RepositoryList = () => {
     setCurrentPage,
   } = useAppStore();
 
+  const isSearching = !!searchQuery.trim();
+
   const apiSortType = useMemo(() => {
     if (sortType === "name") return "full_name" as SortType;
     if (sortType === "stars") return "updated" as SortType;
@@ -45,6 +48,7 @@ export const RepositoryList = () => {
   // Buscar informações do usuário para pegar o total de repositórios
   const { data: user } = useUser(currentUser);
 
+  // Repositories fetch
   const {
     data: repositories,
     isLoading: isLoadingRepos,
@@ -55,40 +59,78 @@ export const RepositoryList = () => {
     apiSortType,
     currentPage,
     itemsPerPage,
+    !isSearching && activeTab === "repositories", // enabled condition
   );
 
+  // Search fetch
+  const {
+    data: searchData,
+    isLoading: isLoadingSearch,
+    error: searchError,
+  } = useSearchRepositories(
+    currentUser,
+    searchQuery,
+    currentPage,
+    itemsPerPage,
+    isSearching && activeTab === "repositories",
+  );
+
+  // Starred fetch
   const {
     data: starredRepos,
     isLoading: isLoadingStarred,
     error: starredError,
-  } = useStarredRepositories(currentUser, currentPage, itemsPerPage);
+  } = useStarredRepositories(
+    currentUser,
+    currentPage,
+    itemsPerPage,
+    activeTab === "starred",
+  );
 
   const isLoading =
-    activeTab === "repositories" ? isLoadingRepos : isLoadingStarred;
-  const error = activeTab === "repositories" ? reposError : starredError;
+    activeTab === "repositories"
+      ? isSearching
+        ? isLoadingSearch
+        : isLoadingRepos
+      : isLoadingStarred;
+
+  const error =
+    activeTab === "repositories"
+      ? isSearching
+        ? searchError
+        : reposError
+      : starredError;
 
   const filteredRepositories = useMemo(() => {
-    const sourceData =
-      activeTab === "repositories" ? repositories : starredRepos;
+    let sourceData: GitHubRepository[] = [];
+
+    if (activeTab === "repositories") {
+      sourceData = isSearching ? searchData?.items || [] : repositories || [];
+    } else {
+      sourceData = starredRepos || [];
+    }
+
     if (!sourceData) return [];
 
     let filtered = [...sourceData];
 
-    if (searchQuery.trim()) {
+    if (activeTab === "starred" && searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
         (repo) =>
           repo.name.toLowerCase().includes(query) ||
           repo.description?.toLowerCase().includes(query) ||
-          repo.topics?.some((topic) => topic.toLowerCase().includes(query)),
+          repo.topics?.some((topic: string) =>
+            topic.toLowerCase().includes(query),
+          ),
       );
     }
 
     if (filterType !== "all") {
       const typeFilters = {
-        forks: (repo: (typeof filtered)[0]) => repo.fork,
-        public: (repo: (typeof filtered)[0]) => !repo.private,
-        private: (repo: (typeof filtered)[0]) => repo.private,
+        forks: (repo: GitHubRepository) => repo.fork,
+        public: (repo: GitHubRepository) => !repo.private,
+        private: (repo: GitHubRepository) => repo.private,
       };
       const filterFn = typeFilters[filterType as keyof typeof typeFilters];
       if (filterFn) filtered = filtered.filter(filterFn);
@@ -107,15 +149,22 @@ export const RepositoryList = () => {
     return filtered;
   }, [
     repositories,
+    searchData,
     starredRepos,
     activeTab,
+    isSearching,
     searchQuery,
     filterType,
     languageFilter,
     sortType,
   ]);
 
-  const totalRepositories = user?.public_repos || 0;
+  const totalRepositories =
+    isSearching && activeTab === "repositories"
+      ? searchData?.total_count || 0
+      : activeTab === "repositories"
+        ? user?.public_repos || 0
+        : starredRepos?.length || 0;
   const totalPages = Math.ceil(totalRepositories / itemsPerPage);
   const paginatedRepositories = filteredRepositories;
 

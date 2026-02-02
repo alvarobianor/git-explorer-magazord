@@ -77,4 +77,26 @@ export const githubService = {
     );
     return data;
   },
+
+  /**
+   * Search repositories for a user with a specific query
+   */
+  async searchUserRepositories(
+    username: string,
+    query: string,
+    page: number = 1,
+    perPage: number = 30,
+  ): Promise<{ total_count: number; items: GitHubRepository[] }> {
+    const { data } = await api.get<{
+      total_count: number;
+      items: GitHubRepository[];
+    }>("/search/repositories", {
+      params: {
+        q: `user:${username} ${query}`,
+        page,
+        per_page: perPage,
+      },
+    });
+    return data;
+  },
 };

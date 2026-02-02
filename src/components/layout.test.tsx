@@ -8,7 +8,6 @@ import {
   LayoutContent,
 } from "./layout";
 import { useNavigate } from "react-router-dom";
-import React from "react";
 
 vi.mock("react-router-dom", () => ({
   useNavigate: vi.fn(),
