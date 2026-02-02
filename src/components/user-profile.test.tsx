@@ -35,12 +35,16 @@ describe("UserProfile", () => {
         location="San Francisco"
         company="GitHub"
         website="https://github.com"
+        email="octocat@github.com"
+        x="octocat"
         instagram="octocat"
       />,
     );
     expect(screen.getByText("San Francisco")).toBeInTheDocument();
     expect(screen.getByText("GitHub")).toBeInTheDocument();
     expect(screen.getByText("github.com")).toBeInTheDocument();
+    expect(screen.getByText("octocat@github.com")).toBeInTheDocument();
+    expect(screen.getByText("@octocat")).toBeInTheDocument();
     expect(screen.getByText("octocat")).toBeInTheDocument();
   });
 

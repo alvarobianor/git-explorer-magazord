@@ -96,6 +96,8 @@ export const MainExplorer = () => {
                       location={user.location}
                       company={user.company}
                       website={user.blog}
+                      email={user.email}
+                      x={user.twitter_username}
                       followers={user.followers}
                       following={user.following}
                       className="!px-0 !py-0 border-none shadow-none text-sm text-[#24292f]"

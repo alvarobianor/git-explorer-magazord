@@ -1,6 +1,12 @@
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { MapPin, Building2, Link as LinkIcon, Instagram } from "lucide-react";
+import {
+  MapPin,
+  Building2,
+  Link as LinkIcon,
+  Instagram,
+  Mail,
+} from "lucide-react";
 import { Skeleton } from "./ui/skeleton";
 import { useState, useEffect, forwardRef } from "react";
 
@@ -138,6 +144,8 @@ interface InfoProps {
   location?: string | null;
   company?: string | null;
   website?: string | null;
+  email?: string | null;
+  x?: string | null;
   followers?: number;
   following?: number;
   instagram?: string | null;
@@ -148,10 +156,12 @@ const UserProfileInfo: React.FC<InfoProps> = ({
   location,
   company,
   website,
+  email,
+  x,
   instagram,
   className,
 }) => (
-  <div className={cn("space-y-4 pt-4", className)}>
+  <div className={cn("flex flex-col gap-3", className)}>
     {company && (
       <UserProfileInfoItem
         icon={<Building2 className="w-5 h-5 flex-shrink-0" />}
@@ -171,6 +181,36 @@ const UserProfileInfo: React.FC<InfoProps> = ({
         href={website.startsWith("http") ? website : `https://${website}`}
       >
         {website.replace(/^https?:\/\//, "")}
+      </UserProfileInfoItem>
+    )}
+    {email && (
+      <UserProfileInfoItem
+        icon={<Mail className="w-5 h-5 flex-shrink-0" />}
+        href={`mailto:${email}`}
+      >
+        {email}
+      </UserProfileInfoItem>
+    )}
+    {x && (
+      <UserProfileInfoItem
+        icon={
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="flex-shrink-0"
+          >
+            <path
+              d="M18.901 1L11.83 9.407L4.76 1H2L10.37 11.237L2 21.2H4.76L12.18 12.39L19.25 21.2H22L13.25 10.42L21.36 1H18.901ZM17.96 19.5H16.4L6.1 4.5H7.66L17.96 19.5Z"
+              fill="currentColor"
+            />
+          </svg>
+        }
+        href={`https://x.com/${x}`}
+      >
+        @{x}
       </UserProfileInfoItem>
     )}
     {instagram && (

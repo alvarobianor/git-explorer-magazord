@@ -36,6 +36,8 @@ export const Default: Story = {
         company="Meta"
         location="Menlo Park, California"
         website="https://opensource.fb.com"
+        email="opensource@meta.com"
+        x="MetaOpenSource"
         instagram="meta"
       />
       <UserProfileStats />
