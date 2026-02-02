@@ -13,6 +13,9 @@ const meta = {
     layout: "centered",
   },
   tags: ["autodocs"],
+  args: {
+    children: null,
+  },
 } satisfies Meta<typeof RepositoryCard>;
 
 export default meta;
