@@ -1,5 +1,6 @@
 import { useAppStore } from "../store/useAppStore";
 import {
+  useUser,
   useUserRepositories,
   useStarredRepositories,
 } from "../hooks/useGithubData";
@@ -41,17 +42,26 @@ export const RepositoryList = () => {
     return sortType;
   }, [sortType]);
 
+  // Buscar informações do usuário para pegar o total de repositórios
+  const { data: user } = useUser(currentUser);
+
   const {
     data: repositories,
     isLoading: isLoadingRepos,
     error: reposError,
-  } = useUserRepositories(currentUser, filterType, apiSortType, 1, 30);
+  } = useUserRepositories(
+    currentUser,
+    filterType,
+    apiSortType,
+    currentPage,
+    itemsPerPage,
+  );
 
   const {
     data: starredRepos,
     isLoading: isLoadingStarred,
     error: starredError,
-  } = useStarredRepositories(currentUser, 1, 30);
+  } = useStarredRepositories(currentUser, currentPage, itemsPerPage);
 
   const isLoading =
     activeTab === "repositories" ? isLoadingRepos : isLoadingStarred;
@@ -105,14 +115,9 @@ export const RepositoryList = () => {
     sortType,
   ]);
 
-  const totalItems = filteredRepositories.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-  const paginatedRepositories = useMemo(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    return filteredRepositories.slice(startIndex, endIndex);
-  }, [filteredRepositories, currentPage, itemsPerPage]);
+  const totalRepositories = user?.public_repos || 0;
+  const totalPages = Math.ceil(totalRepositories / itemsPerPage);
+  const paginatedRepositories = filteredRepositories;
 
   const pageNumbers = useMemo(() => {
     const pages: (number | string)[] = [];
@@ -208,8 +213,10 @@ export const RepositoryList = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between px-1">
         <p className="text-muted-foreground text-sm">
-          <span className="font-semibold text-foreground">{totalItems}</span>{" "}
-          {totalItems === 1 ? "repository" : "repositories"}
+          <span className="font-semibold text-foreground">
+            {`${currentPage !== totalPages ? itemsPerPage * currentPage : totalRepositories} of ${totalRepositories}`}
+          </span>
+          {totalRepositories === 1 ? " repository" : " repositories"}
           {searchQuery && ` matching "${searchQuery}"`}
         </p>
         {totalPages > 1 && (
