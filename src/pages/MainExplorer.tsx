@@ -19,7 +19,7 @@ import { ProfileSkeleton } from "@/components/ui/skeleton";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 
-export const Home = () => {
+export const MainExplorer = () => {
   const { username } = useParams<{ username: string }>();
   const navigate = useNavigate();
 
