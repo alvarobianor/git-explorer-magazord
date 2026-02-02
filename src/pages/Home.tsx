@@ -1,3 +1,4 @@
+import { RepositoryFilters } from "@/components/RepositoryFilters";
 import { useAppStore } from "@/store/useAppStore";
 import { useUser } from "@/hooks/useGithubData";
 import {
@@ -9,12 +10,9 @@ import {
 } from "@/components/layout";
 import { UserProfileAvatar, UserProfileInfo } from "@/components/user-profile";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select } from "@/components/ui/select";
-import { Search, BookMarked, FolderGit2, Github } from "lucide-react";
+import { BookMarked, FolderGit2, Github } from "lucide-react";
 import { RepositoryList } from "@/components/RepositoryList";
-import type { FilterType } from "@/types/github";
 import { cn } from "@/lib/utils";
 import { ProfileSkeleton } from "@/components/ui/skeleton";
 
@@ -55,24 +53,6 @@ export const Home = () => {
       navigate("/");
     }
   }, [username, currentUser, navigate]);
-
-  const typeFilters: { value: FilterType; label: string }[] = [
-    { value: "all", label: "All" },
-    { value: "public", label: "Public" },
-    { value: "private", label: "Private" },
-    { value: "forks", label: "Forks" },
-  ];
-
-  const languageFilters = [
-    { value: "", label: "All Languages" },
-    { value: "JavaScript", label: "JavaScript" },
-    { value: "TypeScript", label: "TypeScript" },
-    { value: "Python", label: "Python" },
-    { value: "Java", label: "Java" },
-    { value: "C++", label: "C++" },
-    { value: "CSS", label: "CSS" },
-    { value: "Rust", label: "Rust" },
-  ];
 
   return (
     <Layout className="bg-white min-h-screen">
@@ -164,91 +144,14 @@ export const Home = () => {
                   </TabsList>
                 </div>
 
-                <div className="flex flex-col space-y-4 mb-8">
-                  <div className="flex flex-col sm:flex-row items-center gap-4">
-                    <div className="relative flex-1 w-full">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#57606a]" />
-                      <Input
-                        placeholder="Search Here"
-                        className="pl-10 h-10 border-[#d0d7de] rounded-md focus-visible:ring-offset-0 focus-visible:ring-1 focus-visible:ring-[#0969da]"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                      />
-                    </div>
-
-                    <div className="flex gap-2 w-full sm:w-auto">
-                      <div className="relative flex-1 sm:flex-none">
-                        <Select
-                          value={filterType}
-                          onChange={(e) =>
-                            setFilterType(e.target.value as FilterType)
-                          }
-                          className="h-10 bg-[#0969da] text-white border-none rounded-full px-6 pr-10 font-medium cursor-pointer appearance-none text-sm min-w-[110px] w-full"
-                        >
-                          {typeFilters.map((filter) => (
-                            <option
-                              key={filter.value}
-                              value={filter.value}
-                              className="text-black"
-                            >
-                              {filter.label}
-                            </option>
-                          ))}
-                        </Select>
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white">
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M19 9l-7 7-7-7"
-                            />
-                          </svg>
-                        </div>
-                      </div>
-
-                      <div className="relative flex-1 sm:flex-none">
-                        <Select
-                          value={languageFilter || ""}
-                          onChange={(e) =>
-                            setLanguageFilter(e.target.value || null)
-                          }
-                          className="h-10 bg-[#0969da] text-white border-none rounded-full px-6 pr-10 font-medium cursor-pointer appearance-none text-sm min-w-[120px] w-full"
-                        >
-                          {languageFilters.map((lang) => (
-                            <option
-                              key={lang.value || "all"}
-                              value={lang.value}
-                              className="text-black"
-                            >
-                              {lang.value || "Language"}
-                            </option>
-                          ))}
-                        </Select>
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white">
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M19 9l-7 7-7-7"
-                            />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <RepositoryFilters
+                  searchQuery={searchQuery}
+                  setSearchQuery={setSearchQuery}
+                  filterType={filterType}
+                  setFilterType={setFilterType}
+                  languageFilter={languageFilter}
+                  setLanguageFilter={setLanguageFilter}
+                />
 
                 <TabsContent className="mt-0 ring-offset-0 focus-visible:ring-0">
                   <RepositoryList />
