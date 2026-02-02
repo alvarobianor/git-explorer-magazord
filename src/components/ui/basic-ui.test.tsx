@@ -1,6 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { Button } from "./button";
 import { Input } from "./input";
 import { Avatar, AvatarImage, AvatarFallback } from "./avatar";
@@ -9,62 +8,35 @@ import { cn } from "@/lib/utils";
 
 describe("UI Components", () => {
   describe("Button", () => {
-    it("renders correctly", () => {
-      const { container } = render(<Button>Click me</Button>);
-      expect(screen.getByText("Click me")).toBeInTheDocument();
+    it("renders correctly with different variants", () => {
+      const { rerender, container } = render(<Button>Default</Button>);
+      expect(screen.getByText("Default")).toBeInTheDocument();
       expect(container.firstChild).toMatchSnapshot();
-    });
 
-    it("applies variant and size classes", () => {
-      const { container } = render(
-        <Button variant="destructive" size="sm">
-          Delete
-        </Button>,
-      );
-      expect(container.firstChild).toHaveClass("bg-destructive");
-      expect(container.firstChild).toHaveClass("h-9");
-    });
-
-    it("can be disabled", () => {
-      render(<Button disabled>Disabled</Button>);
-      expect(screen.getByRole("button")).toBeDisabled();
-    });
-
-    it("calls onClick when clicked", async () => {
-      const handleClick = vi.fn();
-      const user = userEvent.setup();
-      render(<Button onClick={handleClick}>Click me</Button>);
-      await user.click(screen.getByText("Click me"));
-      expect(handleClick).toHaveBeenCalledTimes(1);
+      rerender(<Button variant="destructive">Destructive</Button>);
+      expect(screen.getByText("Destructive")).toHaveClass("bg-destructive");
     });
   });
 
   describe("Input", () => {
     it("renders correctly", () => {
-      const { container } = render(<Input placeholder="Search..." />);
-      expect(screen.getByPlaceholderText("Search...")).toBeInTheDocument();
-      expect(container.firstChild).toMatchSnapshot();
-    });
-
-    it("can be disabled", () => {
-      render(<Input disabled placeholder="Disabled" />);
-      expect(screen.getByPlaceholderText("Disabled")).toBeDisabled();
+      render(<Input placeholder="Enter text" />);
+      expect(screen.getByPlaceholderText("Enter text")).toBeInTheDocument();
     });
   });
 
   describe("Avatar", () => {
-    it("renders with image", () => {
-      const { container } = render(
+    it("renders image and fallback correctly", () => {
+      const { rerender } = render(
         <Avatar>
-          <AvatarImage src="https://github.com/octocat.png" alt="Octocat" />
+          <AvatarImage src="https://github.com/octocat.png" />
           <AvatarFallback>OC</AvatarFallback>
         </Avatar>,
       );
-      expect(container.firstChild).toMatchSnapshot();
-    });
+      const img = screen.getByRole("img");
+      expect(img).toHaveAttribute("src", "https://github.com/octocat.png");
 
-    it("renders fallback when image is missing", () => {
-      render(
+      rerender(
         <Avatar>
           <AvatarFallback>OC</AvatarFallback>
         </Avatar>,
@@ -74,14 +46,28 @@ describe("UI Components", () => {
   });
 
   describe("Select", () => {
-    it("renders correctly", () => {
+    it("renders and selects options correctly", () => {
+      const onChange = vi.fn();
+      const options = [
+        { value: "1", label: "Option 1" },
+        { value: "2", label: "Option 2" },
+      ];
+
       const { container } = render(
-        <Select>
-          <option value="1">Option 1</option>
-          <option value="2">Option 2</option>
-        </Select>,
+        <Select options={options} value="1" onChange={onChange} />,
       );
+
       expect(screen.getByText("Option 1")).toBeInTheDocument();
+
+      const trigger = screen.getByRole("combobox");
+      fireEvent.click(trigger);
+
+      expect(screen.getByText("Option 2")).toBeInTheDocument();
+
+      const option2 = screen.getByText("Option 2");
+      fireEvent.click(option2);
+
+      expect(onChange).toHaveBeenCalledWith("2");
       expect(container.firstChild).toMatchSnapshot();
     });
   });

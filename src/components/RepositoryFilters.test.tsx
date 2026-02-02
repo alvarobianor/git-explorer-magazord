@@ -42,19 +42,33 @@ describe("RepositoryFilters", () => {
     expect(defaultProps.setSearchQuery).toHaveBeenCalledWith("react");
   });
 
-  it("calls setFilterType on select change immediately", () => {
+  it("calls setFilterType on select change", () => {
     render(<RepositoryFilters {...defaultProps} />);
-    const selects = screen.getAllByRole("combobox");
-    const typeSelect = selects[0];
-    fireEvent.change(typeSelect, { target: { value: "public" } });
+    const triggers = screen.getAllByRole("combobox");
+    const typeTrigger = triggers[0];
+
+    // Open dropdown
+    fireEvent.click(typeTrigger);
+
+    // Select 'Public'
+    const publicOption = screen.getByText("Public");
+    fireEvent.click(publicOption);
+
     expect(defaultProps.setFilterType).toHaveBeenCalledWith("public");
   });
 
-  it("calls setLanguageFilter on language select change immediately", () => {
+  it("calls setLanguageFilter on language select change", () => {
     render(<RepositoryFilters {...defaultProps} />);
-    const selects = screen.getAllByRole("combobox");
-    const langSelect = selects[1];
-    fireEvent.change(langSelect, { target: { value: "JavaScript" } });
+    const triggers = screen.getAllByRole("combobox");
+    const langTrigger = triggers[1];
+
+    // Open dropdown
+    fireEvent.click(langTrigger);
+
+    // Select 'JavaScript'
+    const jsOption = screen.getByText("JavaScript");
+    fireEvent.click(jsOption);
+
     expect(defaultProps.setLanguageFilter).toHaveBeenCalledWith("JavaScript");
   });
 });

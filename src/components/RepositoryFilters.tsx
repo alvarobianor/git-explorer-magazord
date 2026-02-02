@@ -43,6 +43,7 @@ export const RepositoryFilters = ({
     { value: "public", label: "Public" },
     { value: "private", label: "Private" },
     { value: "forks", label: "Forks" },
+    { value: "archived", label: "Archived" },
   ];
 
   const languageFilters = [
@@ -69,75 +70,21 @@ export const RepositoryFilters = ({
       </div>
 
       <div className="flex gap-4 w-full sm:w-auto">
-        <div className="relative flex-1 sm:flex-none">
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none text-white z-10">
-            <svg
-              width="12"
-              height="8"
-              viewBox="0 0 12 8"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M1 1.5L6 6.5L11 1.5"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-          <Select
-            value={filterType}
-            onChange={(e) => setFilterType(e.target.value as FilterType)}
-            className="h-[40px] bg-gradient-to-r from-[#0056A6] to-[#0587FF] hover:opacity-90 text-white border-none rounded-full pl-10 pr-6 font-medium cursor-pointer appearance-none text-sm min-w-[105px] w-full transition-all focus:ring-2 focus:ring-[#0969da] focus:ring-offset-2"
-          >
-            {typeFilters.map((filter) => (
-              <option
-                key={filter.value}
-                value={filter.value}
-                className="text-black bg-white"
-              >
-                {filter.label === "All" ? "Type" : filter.label}
-              </option>
-            ))}
-          </Select>
-        </div>
+        <Select
+          options={typeFilters}
+          value={filterType}
+          onChange={(val) => setFilterType(val as FilterType)}
+          placeholder="Type"
+          className="flex-1 sm:flex-none"
+        />
 
-        <div className="relative flex-1 sm:flex-none">
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none text-white z-10">
-            <svg
-              width="12"
-              height="8"
-              viewBox="0 0 12 8"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M1 1.5L6 6.5L11 1.5"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-          <Select
-            value={languageFilter || ""}
-            onChange={(e) => setLanguageFilter(e.target.value || null)}
-            className="h-[40px] bg-gradient-to-r from-[#0056A6] to-[#0587FF] hover:opacity-90 text-white border-none rounded-full pl-10 pr-6 font-medium cursor-pointer appearance-none text-sm min-w-[145px] w-full transition-all focus:ring-2 focus:ring-[#0969da] focus:ring-offset-2"
-          >
-            {languageFilters.map((lang) => (
-              <option
-                key={lang.value || "all"}
-                value={lang.value}
-                className="text-black bg-white"
-              >
-                {lang.value || "Language"}
-              </option>
-            ))}
-          </Select>
-        </div>
+        <Select
+          options={languageFilters}
+          value={languageFilter || ""}
+          onChange={(val) => setLanguageFilter(val || null)}
+          placeholder="Language"
+          className="flex-1 sm:flex-none"
+        />
       </div>
     </div>
   );
