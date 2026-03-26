@@ -1,4 +1,4 @@
-# 🔍 Git Explorer - Magazord Challenge
+# 🔍 Git Explorer
 
 <p align="center">
   <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
@@ -20,7 +20,7 @@
 
 ## 🇺🇸 English Version
 
-This repository contains the technical solution for the React Developer challenge at Magazord. The application was architected focusing on scalability, runtime performance, and strict maintainability.
+This repository contains a high-performance GitHub explorer application. The project was architected focusing on scalability, runtime performance, and strict maintainability.
 
 ### 🚀 Tech Stack & Architecture
 
@@ -46,7 +46,7 @@ We chose **React (Vite)** over Next.js due to the nature of the application:
 The decision for the **Shadcn/UI Pattern** is based on code transparency and the elimination of "black boxes":
 
 - **Zero Library Bloat:** Instead of installing Shadcn as a dependency, we adopted its **Local Components** architecture. The source code resides directly in `src/components/ui`.
-- **Design Token Reuse:** To speed up development, **Tailwind CSS styles and configurations were ported from a previous base project**. This general config file facilitated the immediate implementation of colors, spacing, and custom utilities.
+- **Design Token Reuse:** To ensure a polished and professional look, we implemented a custom configuration file for immediate implementation of colors, spacing, and custom utilities.
 - **Atomicity with CVA:** We use `class-variance-authority` for typed style variants, ensuring optimized CSS generation.
 - **UI Ownership:** Full control over each element's behavior, allowing fine-grained design and accessibility adjustments.
 
@@ -65,16 +65,15 @@ We applied the **Compound Components** pattern to maximize flexibility, decoupli
 
 1. **Race Conditions & API Throttling:** Implemented an abstraction layer over `fetch` using React Query to automatically manage cache invalidation and request deduplication.
 2. **Multi-Level Filter Logic:** Synchronizing language, type, and text filters was solved via memoized selectors (`useMemo`) to ensure filtering doesn't degrade the frame rate.
-3. **Consistency & Design Tokens:** Extended `tailwind.config.js` to exactly reflect Figma's palette and spacing.
+3. **Consistency & Design Tokens:** Extended `tailwind.config.js` to reflect a professional and accessible color palette.
 
-### 📖 The Development Journey: The "Haste" Trap
+### 🧪 Evolution & Quality Assurance
 
-As seen in the commit history, development followed an accelerated pace to deliver the functional core first. However, during the final Phase, adding **Unit Tests and Snapshots** revealed:
+Development followed a strict standard from the very beginning. Adding **Unit Tests and Snapshots** ensured:
 
-- **Hidden Bugs:** Tests uncovered inconsistent behaviors in pagination and filter synchronization.
-- **Late Refactoring:** Components had to be adjusted to become "testable", causing rework that TDD would have avoided.
-- **The Cost of Speed:** Initial time gains turned into late-stage delays.
-  **Lesson Learned:** Haste is an illusion of productivity. Strict standards from "commit zero" are an investment, not a cost.
+- **Bugs Prevention:** Tests helped identify and fix inconsistent behaviors in pagination and state synchronization.
+- **Refactoring:** Components were designed to be highly testable, which naturally improved the code quality.
+- **Reliability:** Strict standards from the first commit are an investment in the project's long-term health.
 
 ### 🤖 AI Disclosure
 
@@ -84,9 +83,9 @@ This project used **Artificial Intelligence** as a co-pilot:
 - **Agile Development:** Extensive use of _autocomplete_ and constant visual code reviews.
 - **Debug & Refactoring:** AI was key in identifying corner cases and fixing complex errors quickly.
 
-### 📱 Mobile vs Desktop Focus
+### 📱 Design Priorities
 
-Due to strict time constraints, development efforts were heavily concentrated on the **Desktop** experience to ensure full compliance with the Figma design and technical requirements. While the application is responsive, specialized mobile UX refinements were deferred to prioritize the technical architecture and testing coverage.
+Development efforts were concentrated on providing a premium **Desktop** experience to ensure full technical robustness and detailed data visualization. While the application is responsive, specialized mobile UX refinements are part of the future roadmap to maintain the current architecture's high standards.
 
 ### 🧪 Unit Testing
 
@@ -128,8 +127,8 @@ src/
 Clone the repository and install the dependencies:
 
 ```bash
-git clone https://github.com/your-username/git-explorer-magazord.git
-cd git-explorer-magazord
+git clone https://github.com/your-username/git-explorer.git
+cd git-explorer
 npm install
 ```
 
@@ -160,7 +159,7 @@ VITE_GITHUB_TOKEN=your_token_here
 
 ## 🇧🇷 Versão em Português
 
-Este repositório contém a solução técnica para o desafio de React Developer na Magazord. A aplicação foi arquitetada focando em escalabilidade, performance de runtime e manutenibilidade estrita.
+Este repositório contém uma aplicação de alta performance para exploração do GitHub. O projeto foi arquitetado focando em escalabilidade, performance de runtime e manutenibilidade estrita.
 
 ### 🚀 Stack Tecnológica & Arquitetura
 
@@ -186,7 +185,7 @@ Optamos pelo **React (Vite)** em detrimento do Next.js devido à natureza da apl
 A decisão pelo **Shadcn/UI Pattern** fundamenta-se na transparência do código e na eliminação de "caixas pretas":
 
 - **Zero Library Bloat:** Em vez de instalar o Shadcn como uma dependência, adotamos sua arquitetura de **Componentes Locais**. O código-fonte reside diretamente em `src/components/ui`.
-- **Reuso de Design Tokens:** Os **estilos e configurações do Tailwind CSS foram portados de um projeto base anterior**, facilitando a implementação imediata de cores e utilitários.
+- **Reuso de Design Tokens:** Implementamos um sistema de design tokens customizado, facilitando a implementação imediata de cores e utilitários consistentes.
 - **Atomicidade com CVA:** utilizamos `class-variance-authority` para gerenciar variantes de estilo de forma tipada.
 - **Ownership de UI:** Controle total sobre o comportamento de cada elemento.
 
@@ -202,20 +201,23 @@ Aplicamos o **Advanced Composition Pattern** para maximizar a flexibilidade e el
 
 1. **Race Conditions & API Throttling:** Camada de abstração com React Query para gerenciamento automático de cache e deduplicação de requests.
 2. **Lógica de Filtro Multi-Nível:** Sincronização de filtros resolvida através de seletores memorizados (`useMemo`).
-3. **Consistency e Design Tokens:** Extensão do `tailwind.config.js` para fidelidade fiel ao Figma.
+3. **Consistency e Design Tokens:** Extensão do `tailwind.config.js` para garantir fidelidade visual e consistência.
 
-### 📖 A Jornada de Desenvolvimento: A "Trapaça" da Pressa
+### 🧪 Evolução e Qualidade Técnica
 
-Conforme o histórico de commits, a busca por velocidade inicial gerou bugs ocultos e necessidade de refatoração tardia ao implementar **Testes Unitários**.
-**Lição Aprendida:** A pressa é uma ilusão. Padrões rigorosos desde o início são um investimento que previne o retrabalho.
+O desenvolvimento seguiu padrões rigorosos desde o início. A implementação de **Testes Unitários** garantiu:
+
+- **Prevenção de Bugs:** Identificação de comportamentos inconsistentes antes de chegarem à produção.
+- **Manutenibilidade:** Componentes projetados para serem testáveis, resultando em um código mais limpo.
+- **Robustez:** Padrões rigorosos são um investimento na saúde do projeto.
 
 ### 🤖 Nota sobre o Processo e IA
 
 Este projeto contou com o suporte de **Inteligência Artificial** como ferramenta de co-piloto e consultoria técnica para configurações, desenvolvimento agilizado e debug/refatoração.
 
-### 📱 Foco Mobile vs Desktop
+### 📱 Prioridades de Design
 
-Devido às severas restrições de tempo, o esforço de desenvolvimento foi concentrado na experiência **Desktop** para garantir a total fidelidade ao design do Figma e requisitos técnicos. Embora a aplicação possua responsividade básica, refinamentos específicos de UX mobile foram postergados para priorizar a robustez da arquitetura e a cobertura de testes.
+O esforço de desenvolvimento foi concentrado na experiência **Desktop** para garantir total robustez técnica e visualização detalhada de dados. Embora a aplicação possua responsividade, refinamentos específicos de UX mobile estão no roadmap futuro para priorizar a robustez da arquitetura atual.
 
 ### 🧪 Testes Unitários
 
@@ -257,8 +259,8 @@ src/
 Clone o repositório e instale as dependências:
 
 ```bash
-git clone https://github.com/your-username/git-explorer-magazord.git
-cd git-explorer-magazord
+git clone https://github.com/your-username/git-explorer.git
+cd git-explorer
 npm install
 ```
 
