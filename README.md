@@ -296,5 +296,5 @@ Este projeto está sob a licença MIT - veja o arquivo [LICENSE](LICENSE) para d
 
 ---
 
-**Developed with focus on technical excellence by Bianor.**
-**Desenvolvido com foco em excelência técnica por Bianor.**
+**Developed with focus on technical excellence by Álvaro Bianor.**
+**Desenvolvido com foco em excelência técnica por Álvaro Bianor.**
